@@ -1,16 +1,75 @@
 package Testers;
 
 import Interfaces.ITestable;
-import Polymorphism.AdherentRectangle;
-import Polymorphism.MyCircle;
-import Polymorphism.MyHexagon;
-import Polymorphism.MyRectangle;
+import Polymorphism.*;
 import Polymorphism.Shape;
 
 import java.awt.*;
+import java.io.*;
 
 public class PolymorphismTester implements ITestable
 {
+    public static boolean documentSerializedTest()
+    {
+        System.out.println("-- do zapisu --");
+        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+
+        ID z=new ID(br);
+        System.out.println(z);
+
+        try
+        {
+            ObjectOutputStream outp=new ObjectOutputStream(new FileOutputStream("plik.dat"));
+            outp.writeObject(z);
+            outp.close();
+        }
+        catch(Exception e){throw new RuntimeException("Couldn't save file");}
+
+
+
+        System.out.println("\n-- z pliku --");
+        ObjectInputStream inp;
+
+        try
+        {
+            inp=new ObjectInputStream(new FileInputStream("plik.dat"));
+            Object o=inp.readObject();
+            ID x=(ID)o;
+            inp.close();
+            System.out.println(x);
+            assert x.equals(z);
+        }
+        catch(FileNotFoundException e){throw new RuntimeException("Couldn't find this file...");}
+        catch(Exception e){throw new RuntimeException("Couldn't read this file");}
+
+        return true;
+    }
+
+    public static boolean documentComparisonTest()
+    {
+        Document[] dataBase = {
+                new Passport("Jan", "Nowak", 2001),
+                new ID("Grzegorz", "Gorniak", 1994),
+                new Passport("Kamil", "Gorniak", 1985)};
+
+        Document z;
+        String pattern = "Gorniak";
+
+        int found = 0;
+
+        for (int i=0; i<dataBase.length; i++)
+        {
+            z = dataBase[i];
+            if (z.isFitting(pattern))
+            {
+                found++;
+            }
+        }
+
+        assert found == 2 : "Document comparison failed";
+        return true;
+    }
+
     private static boolean customConstructorTest()
     {
         var vertex = new Point( 10, 20 );
@@ -96,6 +155,16 @@ public class PolymorphismTester implements ITestable
         if ( polymorphismTest() )
         {
             System.out.println( "Passed polymorphism test" );
+        }
+
+        if (documentComparisonTest())
+        {
+            System.out.println("Passed Document comparison test");
+        }
+
+        if (documentSerializedTest())
+        {
+            System.out.println("Passed Document saving and reading test");
         }
     }
 }
