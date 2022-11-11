@@ -6,10 +6,58 @@ import Polymorphism.Shape;
 
 import java.awt.*;
 import java.io.*;
+import java.math.BigDecimal;
 
 public class PolymorphismTester implements ITestable
 {
-    public static boolean documentSerializedTest()
+    private static boolean accountTests()
+    {
+        return accountWithdrawTest() && accountDepositTest() && taxTest() && interestTest() && incomeTest();
+    }
+
+    private static boolean incomeTest()
+    {
+        SavingsAccount acc = new SavingsAccount("1234", "200");
+        BigDecimal interest = acc.calculateIncome(12, 1);
+        assert interest.compareTo(new BigDecimal("4.91")) > 0 : "Interest too low";
+        assert interest.compareTo(new BigDecimal("4.93")) < 0 : "Interest too high";
+        return true;
+    }
+
+    private static boolean interestTest()
+    {
+        SavingsAccount acc = new SavingsAccount("1234", "200");
+        BigDecimal interest = acc.calculateInterest(12, 1);
+        assert interest.compareTo(new BigDecimal("6.07")) > 0 : "Interest too low";
+        assert interest.compareTo(new BigDecimal("6.09")) < 0 : "Interest too high";
+        return true;
+    }
+
+    private static boolean taxTest()
+    {
+        SavingsAccount acc = new SavingsAccount("1234", "221");
+        BigDecimal tax = acc.calculateTax(new BigDecimal(221));
+        assert tax.compareTo(new BigDecimal("41.99")) == 0;
+        return true;
+    }
+
+    private static boolean accountWithdrawTest()
+    {
+        SavingsAccount acc = new SavingsAccount("1234", "200");
+        acc.withdraw(new BigDecimal("50"));
+        assert acc.balanceEquals("150");
+        return true;
+    }
+
+    private static boolean accountDepositTest()
+    {
+        SavingsAccount acc = new SavingsAccount("1234", "200");
+        acc.deposit(new BigDecimal("50"));
+        assert acc.balanceEquals("250");
+        return true;
+    }
+
+    private static boolean documentSerializedTest()
     {
         System.out.println("-- do zapisu --");
         BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
@@ -45,7 +93,7 @@ public class PolymorphismTester implements ITestable
         return true;
     }
 
-    public static boolean documentComparisonTest()
+    private static boolean documentComparisonTest()
     {
         Document[] dataBase = {
                 new Passport("Jan", "Nowak", 2001),
@@ -165,6 +213,11 @@ public class PolymorphismTester implements ITestable
         if (documentSerializedTest())
         {
             System.out.println("Passed Document saving and reading test");
+        }
+
+        if (accountTests())
+        {
+            System.out.println("Passed all account tests");
         }
     }
 }
