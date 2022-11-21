@@ -9,9 +9,12 @@ class Serve extends Thread
 {
     Socket clientSocket;
 
+    static int counter = 0;
+
     Serve(Socket sock)
     {
         this.clientSocket = sock;
+        counter++;
     }
 
     void task() throws IOException {
@@ -39,6 +42,8 @@ class Serve extends Thread
         {
             return;
         }
+
+        System.out.println(request);
 
         String fileName = request.split(" ")[1];
         System.out.println("file: " + fileName);
@@ -104,12 +109,12 @@ class Serve extends Thread
                 request = inp.readLine();
             }*/
 
-        System.out.println(request);
-
         //zamykanie strumieni
         inp.close();
         outp.close();
         this.clientSocket.close();
+
+        System.out.println("Ilosc threadow: " + counter);
     }
 
     public void run()
@@ -117,7 +122,8 @@ class Serve extends Thread
         try {
             task();
         }
-        catch (IOException e) {return;}
+        catch (IOException e) {
+            return;}
     }
 }
 
@@ -133,81 +139,7 @@ public class ServerHTTP
             System.out.println("Oczekiwanie na polaczenie...");
             Socket sock=serv.accept();
 
-            //strumienie danych
-            InputStream is=sock.getInputStream();
-            OutputStream os=sock.getOutputStream();
-            BufferedReader inp=new BufferedReader(new InputStreamReader(is));
-            DataOutputStream outp=new DataOutputStream(os);
-
-            //przyjecie zadania (request)
-            String request=inp.readLine();
-
-            if (request == null)
-            {
-                continue;
-            }
-
-            String fileName = request.split(" ")[1];
-            System.out.println("file: " + fileName);
-
-            String code = "HTTP/1.0 200 OK\r\n";
-            FileInputStream file;
-
-            try {
-                file = new FileInputStream(new File(System.getProperty("user.dir") + "\\src\\Networking\\HTTP\\" + fileName));
-            }
-            catch (FileNotFoundException e) {
-                file = new FileInputStream(System.getProperty("user.dir") + "\\src\\Networking\\HTTP\\FileNotFound.html");
-                code = "HTTP/1.0 404 FileNotFound\r\n";
-            }
-
-            byte[] buf;
-            buf = new byte[1024];
-            int n = 0;
-
-            int contentLength = file.available();
-
-            String extension = Optional.ofNullable(fileName).filter(f -> f.contains(".")).map(f -> f.substring(fileName.lastIndexOf(".") + 1)).get();
-            System.out.println("extension: " + extension);
-
-            //wyslanie odpowiedzi (response)
-            if(request.startsWith("GET"))
-            {
-                //response header
-                outp.writeBytes(code);
-                if (extension.equals("html"))
-                {
-                    outp.writeBytes("Content-Type: text/html\r\n");
-                }
-                else
-                {
-                    outp.writeBytes("Content-Type: \r\n");
-                }
-                outp.writeBytes("Content-Length: " + contentLength + "\r\n");
-                outp.writeBytes("\r\n");
-
-                while ((n = file.read(buf)) != -1)
-                {
-                    outp.write(buf);
-                }
-            }
-            else
-            {
-                outp.writeBytes("HTTP/1.1 501 Not supported.\r\n");
-            }
-
-            /*while (inp.ready())
-            {
-                System.out.println(request);
-                request = inp.readLine();
-            }*/
-
-            System.out.println(request);
-
-            //zamykanie strumieni
-            inp.close();
-            outp.close();
-            sock.close();
+            new Serve(sock).start();
         }
     }
 }
