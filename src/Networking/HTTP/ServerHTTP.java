@@ -3,17 +3,20 @@ package Networking.HTTP;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.net.*;
+import java.util.Date;
 import java.util.Optional;
 
 class Serve extends Thread
 {
     Socket clientSocket;
+    FileWriter logFile;
 
     static int counter = 0;
 
-    Serve(Socket sock)
+    Serve(Socket sock, FileWriter file)
     {
         this.clientSocket = sock;
+        this.logFile = file;
         counter++;
     }
 
@@ -42,6 +45,14 @@ class Serve extends Thread
         {
             return;
         }
+
+        //saving log
+        Date date = new Date();
+        String log = date.toString() + "\t" + request + "\t" + this.clientSocket.getInetAddress().toString() + "\n";
+        this.logFile.write(log);
+        this.logFile.flush();
+
+
 
         System.out.println(request);
 
@@ -148,13 +159,16 @@ public class ServerHTTP
             }
         }
 
+        //creating log file
+        FileWriter file = new FileWriter(new File("log.txt"));
+
         while(true)
         {
             //przyjecie polaczenia
             System.out.println("Oczekiwanie na polaczenie...");
             Socket sock=serv.accept();
 
-            new Serve(sock).start();
+            new Serve(sock, file).start();
         }
     }
 }
