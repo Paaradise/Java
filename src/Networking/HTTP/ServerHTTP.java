@@ -131,7 +131,22 @@ public class ServerHTTP
 {
     public static void main(String[] args) throws IOException
     {
-        ServerSocket serv=new ServerSocket(80);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Choose port number: ");
+        int port = Integer.parseInt(br.readLine());
+        ServerSocket serv;
+        while (true)
+        {
+            try {
+                serv=new ServerSocket(port);
+                break;
+            }
+            catch (BindException e)
+            {
+                System.out.println("Selected port in use, choose another: ");
+                port = Integer.parseInt(br.readLine());
+            }
+        }
 
         while(true)
         {
