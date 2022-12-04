@@ -3,17 +3,20 @@ package Networking.HTTP;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.net.*;
+import java.util.Date;
 import java.util.Optional;
 
 class Serve extends Thread
 {
     Socket clientSocket;
+    FileWriter logFile;
 
     static int counter = 0;
 
-    Serve(Socket sock)
+    Serve(Socket sock, FileWriter file)
     {
         this.clientSocket = sock;
+        this.logFile = file;
         counter++;
     }
 
@@ -42,6 +45,14 @@ class Serve extends Thread
         {
             return;
         }
+
+        //saving log
+        Date date = new Date();
+        String log = date.toString() + "\t" + request + "\t" + this.clientSocket.getInetAddress().toString() + "\n";
+        this.logFile.write(log);
+        this.logFile.flush();
+
+
 
         System.out.println(request);
 
@@ -131,7 +142,25 @@ public class ServerHTTP
 {
     public static void main(String[] args) throws IOException
     {
-        ServerSocket serv=new ServerSocket(80);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Choose port number: ");
+        int port = Integer.parseInt(br.readLine());
+        ServerSocket serv;
+        while (true)
+        {
+            try {
+                serv=new ServerSocket(port);
+                break;
+            }
+            catch (BindException e)
+            {
+                System.out.println("Selected port in use, choose another: ");
+                port = Integer.parseInt(br.readLine());
+            }
+        }
+
+        //creating log file
+        FileWriter file = new FileWriter(new File("log.txt"));
 
         while(true)
         {
@@ -139,7 +168,7 @@ public class ServerHTTP
             System.out.println("Oczekiwanie na polaczenie...");
             Socket sock=serv.accept();
 
-            new Serve(sock).start();
+            new Serve(sock, file).start();
         }
     }
 }
