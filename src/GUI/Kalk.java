@@ -3,11 +3,12 @@ package GUI;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class Kalk implements ActionListener
+public class Kalk implements ActionListener, KeyListener
 {
     JTextField t1;
     JButton b1;
@@ -110,6 +111,8 @@ public class Kalk implements ActionListener
 
         t1=new JTextField(15);
         t1.addActionListener(this);
+        t1.addKeyListener(this);
+        t1.setEditable(false);
         t1.setHorizontalAlignment(JTextField.RIGHT);
         gbc.gridx=0;
         gbc.gridy=0;
@@ -238,5 +241,36 @@ public class Kalk implements ActionListener
                 new Kalk().init();
             }
         });
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        return;
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int code = e.getKeyCode();
+        //check if key is number or dot
+        if (
+                ( (code >= KeyEvent.VK_0) && (code <= KeyEvent.VK_9) ) ||
+                ( (code >= KeyEvent.VK_NUMPAD0) && (code <= KeyEvent.VK_NUMPAD9) ) ||
+                (code == KeyEvent.VK_PERIOD))
+        {
+            t1.setText(t1.getText()+e.getKeyChar());
+            t1.requestFocus();
+        }
+
+        //numpad dot might be interpreted as comma, so we need second check to prevent error
+        if (code == KeyEvent.VK_DECIMAL)
+        {
+            t1.setText(t1.getText()+'.');
+            t1.requestFocus();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        return;
     }
 }
