@@ -11,6 +11,7 @@ import java.util.Iterator;
 public class Kalk implements ActionListener, KeyListener
 {
     JTextField t1;
+    JTextArea t2;
     JButton b1;
     JButton b2;
     JButton b3;
@@ -75,7 +76,19 @@ public class Kalk implements ActionListener, KeyListener
         if(Arrays.asList(actions).contains(button))
         {
             buf=Double.parseDouble(t1.getText());
+
+            if (!lastAction.equals(""))
+            {
+                t2.setText(result + " " + lastAction + " " + buf + " = ");
+            }
+
             result = getResult(lastAction, result, buf);
+
+            if (!lastAction.equals(""))
+            {
+                t2.setText(t2.getText() + result);
+            }
+
             lastAction = button;
             t1.setText("");
             t1.requestFocus();
@@ -84,7 +97,19 @@ public class Kalk implements ActionListener, KeyListener
         else if(target==brow||target==t1)
         {
             buf=Double.parseDouble(t1.getText());
+
+            if (!lastAction.equals(""))
+            {
+                t2.setText(result + " " + lastAction + " " + buf + " = ");
+            }
+
             result = getResult(lastAction, result, buf);
+
+            if (!lastAction.equals(""))
+            {
+                t2.setText(t2.getText() + result);
+            }
+
             lastAction = "";
             t1.setText(Double.toString(result));
             t1.requestFocus();
@@ -115,13 +140,25 @@ public class Kalk implements ActionListener, KeyListener
         t1.setEditable(false);
         t1.setHorizontalAlignment(JTextField.RIGHT);
         gbc.gridx=0;
-        gbc.gridy=0;
+        gbc.gridy=1;
         gbc.gridwidth=5;
         gbc.ipadx=0;
         gbc.ipady=5;
         gbc.insets=new Insets(5,5,0,5);
         gbl.setConstraints(t1,gbc);
         c.add(t1);
+
+
+        t2 = new JTextArea();
+        t2.setEditable(false);
+        gbc.gridx=0;
+        gbc.gridy=0;
+        gbc.gridwidth=5;
+        gbc.ipadx=0;
+        gbc.ipady=5;
+        gbl.setConstraints(t2,gbc);
+        c.add(t2);
+
 
 
         gbc.insets=new Insets(5,5,0,0);
@@ -135,7 +172,7 @@ public class Kalk implements ActionListener, KeyListener
             b.addActionListener(this);
             b.setFocusable(false);
             gbc.gridx=xVal;
-            gbc.gridy=yVal;
+            gbc.gridy=yVal + 1;
             gbc.gridwidth=1;
             gbc.ipadx=0;
             gbc.ipady=0;
@@ -151,7 +188,7 @@ public class Kalk implements ActionListener, KeyListener
         bplus.setFocusable(false);
         bplus.setToolTipText("dodawanie");
         gbc.gridx=3;
-        gbc.gridy=1;
+        gbc.gridy=2;
         gbc.gridwidth=2;
         gbc.ipadx=30;
         gbc.ipady=0;
@@ -166,7 +203,7 @@ public class Kalk implements ActionListener, KeyListener
         bminus.setFocusable(false);
         bminus.setToolTipText("odejmowanie");
         gbc.gridx=3;
-        gbc.gridy=2;
+        gbc.gridy=3;
         gbc.gridwidth=2;
         gbc.ipadx=30;
         gbc.ipady=0;
@@ -182,7 +219,7 @@ public class Kalk implements ActionListener, KeyListener
         btimes.setFocusable(false);
         btimes.setToolTipText("mnozenie");
         gbc.gridx=3;
-        gbc.gridy=3;
+        gbc.gridy=4;
         gbc.gridwidth=2;
         gbc.ipadx=30;
         gbc.ipady=0;
@@ -197,7 +234,7 @@ public class Kalk implements ActionListener, KeyListener
         bdivide.setFocusable(false);
         bdivide.setToolTipText("dzielenie");
         gbc.gridx=3;
-        gbc.gridy=4;
+        gbc.gridy=5;
         gbc.gridwidth=2;
         gbc.ipadx=30;
         gbc.ipady=0;
@@ -212,7 +249,7 @@ public class Kalk implements ActionListener, KeyListener
         brow.setFocusable(false);
         brow.setToolTipText("wykonaj działanie");
         gbc.gridx=0;
-        gbc.gridy=5;
+        gbc.gridy=6;
         gbc.gridwidth=4;
         gbc.ipadx=30;
         gbc.ipady=0;
