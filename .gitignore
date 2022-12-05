@@ -24,3 +24,4 @@ hs_err_pid*
 src/Networking/Duplex2/Client.java
 src/Networking/Duplex2/Server.java
 plik.dat
+/history.csv

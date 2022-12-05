@@ -3,10 +3,11 @@ package GUI;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
-import java.security.Key;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Kalk implements ActionListener, KeyListener
 {
@@ -37,8 +38,11 @@ public class Kalk implements ActionListener, KeyListener
         }
     };
     JButton bplus,brow,bminus,btimes,bdivide;
+    JButton reverse;
+    BufferedWriter writer;
+    BufferedReader reader;
 
-    double x,buf;
+    double n1, n2;
     double result = 0;
     String lastAction = "";
     String[] actions = { "+", "-", "*", "/" };
@@ -75,18 +79,17 @@ public class Kalk implements ActionListener, KeyListener
 
         if(Arrays.asList(actions).contains(button))
         {
-            buf=Double.parseDouble(t1.getText());
+            n2=Double.parseDouble(t1.getText());
+            n1 = result;
+
+            result = getResult(lastAction, n1, n2);
 
             if (!lastAction.equals(""))
             {
-                t2.setText(result + " " + lastAction + " " + buf + " = ");
-            }
-
-            result = getResult(lastAction, result, buf);
-
-            if (!lastAction.equals(""))
-            {
-                t2.setText(t2.getText() + result);
+                t2.setText(n1 + " " + lastAction + " " + n2 + " = " + result);
+                try {
+                    saveAction(n1, n2, lastAction);
+                } catch (IOException ex) {}
             }
 
             lastAction = button;
@@ -96,24 +99,104 @@ public class Kalk implements ActionListener, KeyListener
 
         else if(target==brow||target==t1)
         {
-            buf=Double.parseDouble(t1.getText());
+            n2=Double.parseDouble(t1.getText());
+            n1 = result;
+
+            result = getResult(lastAction, n1, n2);
 
             if (!lastAction.equals(""))
             {
-                t2.setText(result + " " + lastAction + " " + buf + " = ");
-            }
-
-            result = getResult(lastAction, result, buf);
-
-            if (!lastAction.equals(""))
-            {
-                t2.setText(t2.getText() + result);
+                t2.setText(n1 + " " + lastAction + " " + n2 + " = " + result);
+                try {
+                    saveAction(n1, n2, lastAction);
+                } catch (IOException ex) {}
             }
 
             lastAction = "";
             t1.setText(Double.toString(result));
             t1.requestFocus();
         }
+
+        else if (target == reverse)
+        {
+            try {
+                reverseAction();
+            } catch (IOException ex) {}
+        }
+    }
+
+    //saves all actions in reversed order
+    void saveAction(double n1, double n2, String action) throws IOException {
+        //creating a reader to collect all saved lines
+        reader = new BufferedReader(new FileReader(new File("history.csv")));
+
+        //saving all lines
+        List<String> content = reader.lines().collect(Collectors.toList());
+
+        //closing reader
+        reader.close();
+
+        //creating writer and clearing all lines from file
+        writer = new BufferedWriter(new FileWriter(new File("history.csv"), false));
+
+        //writing current operation at first line
+        writer.write(n1 + ";" + n2 + ";" + action + "\n");
+        writer.flush();
+
+        //writing all other operations next
+        while (content.size() > 0)
+        {
+            writer.write(content.remove(0) + "\n");
+            writer.flush();
+        }
+
+        //closing writer
+        writer.close();
+    }
+
+    void reverseAction() throws IOException {
+        //creating reader
+        reader = new BufferedReader(new FileReader(new File("history.csv")));
+
+        //saving all lines to list
+        List<String> content = reader.lines().collect(Collectors.toList());
+
+        //closing reader
+        reader.close();
+
+        //assure there's any operation to reverse
+        if (content.size() < 2)
+        {
+            return;
+        }
+
+        //recreating state from last operation
+        String[] line = content.get(1).split(";");
+        n1 = Double.parseDouble(line[0]);
+        n2 = Double.parseDouble(line[1]);
+        lastAction = line[2];
+        result = getResult(lastAction, n1, n2);
+
+        //setting all the text fields
+        t2.setText(n1 + " " + lastAction + " " + n2 + " = " + result);
+
+        lastAction = "";
+        t1.setText(Double.toString(result));
+        t1.requestFocus();
+
+        //creating writer and clearing all lines from file
+        writer = new BufferedWriter(new FileWriter(new File("history.csv"), false));
+
+        //saving all lines without the one that is reversed now
+        while (content.size() > 1)
+        {
+            writer.write(content.remove(1) + "\n");
+            writer.flush();
+        }
+
+        //closing writer
+        writer.close();
+
     }
 
     void init()
@@ -123,6 +206,12 @@ public class Kalk implements ActionListener, KeyListener
         //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         //}
         //catch(Exception e){}
+
+        try {
+            //clear the file while initializing
+            writer = new BufferedWriter(new FileWriter(new File("history.csv"), false));
+            writer.close();
+        } catch (IOException e) {}
 
         JFrame f=new JFrame();
         Container c=f.getContentPane();
@@ -241,6 +330,20 @@ public class Kalk implements ActionListener, KeyListener
         gbc.insets=new Insets(5,5,0,5);
         gbl.setConstraints(bdivide,gbc);
         c.add(bdivide);
+
+
+        reverse = new JButton("<<");
+        reverse.addActionListener(this);
+        reverse.setFocusable(false);
+        reverse.setToolTipText("Cofanie operacji");
+        gbc.gridx=3;
+        gbc.gridy=6;
+        gbc.gridwidth=2;
+        gbc.ipadx=30;
+        gbc.ipady=0;
+        gbc.insets=new Insets(5,5,0,5);
+        gbl.setConstraints(reverse, gbc);
+        c.add(reverse);
 
 
 
