@@ -19,6 +19,7 @@ public class Grid extends JPanel implements MouseMotionListener
         b=new Bar(100);
         a=new Ball(this,100,100,1,1);
         s=new BallEngine(a, b);
+        new CollisionDetector(a, b);
     }
 
     public void paintComponent(Graphics g)
@@ -26,8 +27,10 @@ public class Grid extends JPanel implements MouseMotionListener
         super.paintComponent(g);
         Graphics2D g2d=(Graphics2D)g;
 
-        g2d.fill(a);
         g2d.fill(b);
+
+        g2d.setPaint(Color.RED);
+        g2d.fill(a);
     }
 
     public void mouseMoved(MouseEvent e)

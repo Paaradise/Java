@@ -17,11 +17,6 @@ public class BallEngine extends Thread {
         {
             while(true)
             {
-                if (this.a.intersects(this.b.getBounds()))
-                {
-                    this.a.dy = -this.a.dy;
-                }
-
                 a.nextStep();
                 sleep(15);
             }

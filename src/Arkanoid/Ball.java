@@ -21,6 +21,22 @@ public class Ball extends Ellipse2D.Float{
         this.dy=dy;
     }
 
+    public void HandleCollision(Rectangle2D r)
+    {
+        int thisOutCode = r.outcode(this.x, this.y);
+        //if ball is on left or right then change dx
+        if ( ((thisOutCode & r.OUT_LEFT) == r.OUT_LEFT) || ((thisOutCode & r.OUT_RIGHT) == r.OUT_RIGHT))
+        {
+            this.dx *= -1;
+        }
+
+        //if ball is above or below then change dy
+        if ( ((thisOutCode & r.OUT_TOP) == r.OUT_TOP) || ((thisOutCode & r.OUT_BOTTOM) == r.OUT_BOTTOM))
+        {
+            this.dy *= -1;
+        }
+    }
+
     void nextStep()
     {
         x+=dx;
