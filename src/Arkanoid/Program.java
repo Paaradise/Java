@@ -16,7 +16,7 @@ public class Program
                 JFrame jf=new JFrame();
                 jf.add(p);
 
-                jf.setTitle("Test grafiki");
+                jf.setTitle("Genetically Superior Arkanoid");
                 jf.setSize(400,370);
                 jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 jf.setVisible(true);
