@@ -43,7 +43,14 @@ public class Ball extends Ellipse2D.Float{
             if (accelx)
             {
                 int dist = (int)(Math.abs(this.getCenterX() - r.getCenterX()));
-                if (dist >= 15) this.dx *=2;
+                if (dist >= 15)
+                {
+                    if (this.dx == 0)
+                    {
+                        this.dx = 1;
+                    }
+                    else this.dx *=2;
+                }
                 else this.dx /= 2;
             }
 
@@ -61,28 +68,6 @@ public class Ball extends Ellipse2D.Float{
 
         if(getMinX()<0 || getMaxX()>p.getWidth())  dx=-dx;
         if(getMinY()<0 || getMaxY()>p.getHeight()) dy=-dy;
-
-//        //deccel every 3 seconds
-//        if (this.counter == 200)
-//        {
-//            if (this.dx < 0)
-//            {
-//                this.dx += 1;
-//                if (this.dx == 0)
-//                {
-//                    this.dx = -1;
-//                }
-//            }
-//            else
-//            {
-//                this.dx -= 1;
-//                if (this.dx == 0)
-//                {
-//                    this.dx = 1;
-//                }
-//            }
-//        }
-//        this.counter += 1;
 
         p.repaint();
         Toolkit.getDefaultToolkit().sync();
