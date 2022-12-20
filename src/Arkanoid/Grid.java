@@ -12,10 +12,6 @@ public class Grid extends JPanel implements MouseMotionListener
     Ball a;
     BallEngine s;
     ArrayList<Brick> brickList = new ArrayList<>(20);
-    Brick b1;
-    Brick b2;
-    Brick b3;
-    Brick b4;
 
     Grid()
     {

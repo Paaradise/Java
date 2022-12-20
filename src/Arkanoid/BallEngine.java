@@ -1,26 +1,31 @@
 package Arkanoid;
 
-public class BallEngine extends Thread {
+public class BallEngine extends Thread
+{
     Ball a;
+
     Bar b;
 
     BallEngine(Ball a, Bar b)
     {
-        this.a=a;
+        this.a = a;
         this.b = b;
         start();
     }
 
     public void run()
     {
-        try
+        while( true )
         {
-            while(true)
+            a.nextStep();
+            try
             {
-                a.nextStep();
                 sleep(15);
             }
+            catch (InterruptedException e)
+            {
+                throw new RuntimeException(e);
+            }
         }
-        catch(InterruptedException e){}
     }
 }

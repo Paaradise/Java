@@ -2,12 +2,15 @@ package Arkanoid;
 
 import java.util.ArrayList;
 
-public class CollisionDetector extends Thread {
+public class CollisionDetector extends Thread
+{
     Ball ball;
+
     Bar bar;
+
     ArrayList<Brick> brickList;
 
-    CollisionDetector(Ball a, Bar b, ArrayList<Brick> brickList)
+    public CollisionDetector(Ball a, Bar b, ArrayList<Brick> brickList)
     {
         this.ball = a;
         this.bar = b;
@@ -19,29 +22,33 @@ public class CollisionDetector extends Thread {
     {
         try
         {
-            while (true)
+            while ( true )
             {
-                //Ball - Bar collision
-                if (this.ball.intersects(this.bar.getBounds()))
+                if ( this.ball.intersects( this.bar.getBounds() ) )
                 {
-                    this.ball.HandleCollision(this.bar.getBounds2D(), true);
-                    //to prevent detecting one collision multiple times
-                    sleep(100);
+                    this.ball.HandleCollision( this.bar.getBounds2D(), true );
+
+                    sleep( 100 );
                 }
 
-                for (Brick b : this.brickList )
+                for ( var brick : this.brickList )
                 {
-                    if ( (b.alive()) && (this.ball.intersects(b.getBounds())) )
+                    if ( brick.alive() && this.ball.intersects( brick.getBounds() ) )
                     {
-                        this.ball.HandleCollision(b.getBounds2D(), false);
-                        b.HandleCollision();
-                        //to prevent detecting one collision multiple times
-                        sleep(100);
+                        this.ball.HandleCollision( brick.getBounds2D(), false );
+
+                        brick.HandleCollision();
+
+                        sleep( 100 );
                     }
                 }
-                sleep(15);
+
+                sleep( 15 );
             }
         }
-        catch (InterruptedException e){}
+        catch (InterruptedException e)
+        {
+
+        }
     }
 }

@@ -6,21 +6,16 @@ public class Program
 {
     public static void main(String[] args)
     {
-        javax.swing.SwingUtilities.invokeLater(new Runnable()
+        javax.swing.SwingUtilities.invokeLater(() ->
         {
-            public void run()
-            {
-                Grid p;
-                p=new Grid();
+            var p = new Grid();
+            var frame = new JFrame();
 
-                JFrame jf=new JFrame();
-                jf.add(p);
-
-                jf.setTitle("Genetically Superior Arkanoid");
-                jf.setSize(400,370);
-                jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                jf.setVisible(true);
-            }
+            frame.add(p);
+            frame.setTitle("Genetically Superior Arkanoid");
+            frame.setSize(400,370);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
         });
     }
 }
