@@ -1,5 +1,9 @@
 package Arkanoid;
 
+import Arkanoid.Models.Ball;
+import Arkanoid.Models.Bar;
+import Arkanoid.Models.Brick;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;

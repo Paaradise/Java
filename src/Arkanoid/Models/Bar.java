@@ -1,4 +1,4 @@
-package Arkanoid;
+package Arkanoid.Models;
 
 import java.awt.geom.Rectangle2D;
 

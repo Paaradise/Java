@@ -1,5 +1,9 @@
 package Arkanoid;
 
+import Arkanoid.Models.Ball;
+import Arkanoid.Models.Bar;
+import Arkanoid.Models.Brick;
+
 import java.util.ArrayList;
 
 public class CollisionDetector extends Thread

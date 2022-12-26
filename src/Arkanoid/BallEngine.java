@@ -1,5 +1,8 @@
 package Arkanoid;
 
+import Arkanoid.Models.Ball;
+import Arkanoid.Models.Bar;
+
 public class BallEngine extends Thread
 {
     Ball a;

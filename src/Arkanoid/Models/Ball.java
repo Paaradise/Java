@@ -1,4 +1,6 @@
-package Arkanoid;
+package Arkanoid.Models;
+
+import Arkanoid.Grid;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -56,9 +58,9 @@ public class Ball extends Ellipse2D.Float
             {
                 var dist = ( int )( Math.abs( this.getCenterX() - rectangle.getCenterX() ) );
 
-                if (dist >= 15)
+                if ( dist >= 15 )
                 {
-                    if (this.dx == 0)
+                    if ( this.dx == 0 )
                     {
                         this.dx = 1;
                     }
@@ -80,7 +82,7 @@ public class Ball extends Ellipse2D.Float
         }
     }
 
-    void nextStep()
+    public void nextStep()
     {
         this.x += this.dx;
         this.y += this.dy;

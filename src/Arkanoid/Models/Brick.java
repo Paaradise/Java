@@ -1,4 +1,4 @@
-package Arkanoid;
+package Arkanoid.Models;
 
 import javax.swing.*;
 import java.awt.geom.Rectangle2D;
@@ -16,7 +16,7 @@ public class Brick extends Rectangle2D.Float
         3, new Color( 150, 150, 150 )
     );
 
-    public Brick (int x, int y, int lives)
+    public Brick( int x, int y, int lives )
     {
         this.x = x;
         this.y = y;
